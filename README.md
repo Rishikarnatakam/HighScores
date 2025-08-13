@@ -6,7 +6,8 @@ Create assessment-ready MCQs that follow a strict tag format, stay aligned to a 
 Screenshots
 
 ![Sidebar](assets/sidebar.png)
-![Structured Preview](assets/preview.png)
+![Preview 1](assets/preview-1.png)
+![Preview 2](assets/preview-2.png)
 
 Highlights
 - Curriculum tagging: `@subject`, `@unit`, `@topic` strictly selected from `data/curriculum.json`.
@@ -87,7 +88,7 @@ app/streamlit_app.py      # Streamlit UI + generation logic
 data/curriculum.json      # Curriculum triples (subject, unit, topic)
 requirements.txt          # Python dependencies
 README.md                 # This file
-assets/                   # Add screenshots here (sidebar.png, preview.png)
+assets/                   # Add screenshots here (sidebar.png, preview-1.png, preview-2.png)
  ENV.example               # Example env vars (local only)
 .gitignore                # Ignore venv, caches, local outputs
 ```

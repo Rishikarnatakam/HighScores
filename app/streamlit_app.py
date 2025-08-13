@@ -2,6 +2,7 @@ import os
 import json
 import random
 import re
+import time
 from io import BytesIO
 from dataclasses import dataclass
 from typing import List, Dict, Any, Optional
@@ -97,6 +98,24 @@ def _fix_invalid_json_escapes(text: str) -> str:
     return ''.join(out)
 
 
+def _repair_json_syntax(text: str) -> str:
+    # Soft repairs for common model JSON issues: smart quotes, missing commas, trailing commas
+    t = text
+    # Normalize smart quotes to standard double quotes
+    t = t.replace('“', '"').replace('”', '"').replace('’', "'").replace('‘', "'")
+    # Insert missing comma between objects: `}{` -> `}, {`
+    t = re.sub(r"}\s*{", "}, {", t)
+    # Remove trailing commas before closing ] or }
+    t = re.sub(r",\s*([}\]])", r"\1", t)
+    # Ensure array starts/ends cleanly
+    # If text accidentally wrapped with extra braces, try to extract array again
+    start = t.find('[')
+    end = t.rfind(']')
+    if start != -1 and end != -1 and end > start:
+        t = t[start:end+1]
+    return t
+
+
 def plan_distribution(triples: List[TopicTriple], total: int, seed: Optional[int]) -> List[Dict[str, Any]]:
     rng = random.Random(seed)
     shuffled = triples.copy()
@@ -125,8 +144,18 @@ def build_client(base_url: str, api_key: str) -> OpenAI:
 DEFAULT_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
 
 
-def call_model(client: OpenAI, model: str, system_prompt: str, user_prompt: str, temperature: float, reasoning_effort: str) -> str:
-    # Single attempt only; no automatic fallbacks
+def call_model(
+    client: OpenAI,
+    model: str,
+    system_prompt: str,
+    user_prompt: str,
+    temperature: float,
+    reasoning_effort: str,
+    debug: bool = False,
+    max_retries: int = 5,
+    base_delay_sec: float = 10.0,
+) -> str:
+    # Automatic backoff on 429 RESOURCE_EXHAUSTED / quota errors
     kwargs = dict(
         model=model,
         temperature=temperature,
@@ -135,11 +164,37 @@ def call_model(client: OpenAI, model: str, system_prompt: str, user_prompt: str,
             {"role": "user", "content": user_prompt},
         ],
     )
-    # Gemini OpenAI-compatible API expects 'reasoning_effort': 'low' | 'medium' | 'high'
     if reasoning_effort and reasoning_effort.lower() != "none":
         kwargs["reasoning_effort"] = reasoning_effort.lower()
-    resp = client.chat.completions.create(**kwargs)
-    return resp.choices[0].message.content or ""
+
+    last_err: Exception | None = None
+    for attempt in range(max_retries):
+        try:
+            resp = client.chat.completions.create(**kwargs)
+            return resp.choices[0].message.content or ""
+        except Exception as e:  # handle rate limits/quota
+            msg = str(e)
+            is_rate = (
+                '429' in msg
+                or 'RESOURCE_EXHAUSTED' in msg
+                or 'rate limit' in msg.lower()
+                or 'quota' in msg.lower()
+            )
+            if is_rate and attempt < max_retries - 1:
+                # try to parse retry delay from message, fallback to increasing delay
+                m = re.search(r"retryDelay['\"]?:\s*'?(\d+)s" , msg)
+                delay = float(m.group(1)) if m else base_delay_sec * (attempt + 1)
+                if debug:
+                    try:
+                        st.info(f"Rate limited on {model}. Waiting {int(delay)}s before retry {attempt+2}/{max_retries}...")
+                    except Exception:
+                        pass
+                time.sleep(delay)
+                last_err = e
+                continue
+            last_err = e
+            break
+    raise last_err if last_err else RuntimeError("Unknown error during model call")
 
 
 def build_system_prompt() -> str:
@@ -228,7 +283,11 @@ def parse_items(text: str, expected_count: int) -> List[GeneratedItem]:
         data = json.loads(text)
     except json.JSONDecodeError:
         fixed = _fix_invalid_json_escapes(text)
-        data = json.loads(fixed)
+        try:
+            data = json.loads(fixed)
+        except json.JSONDecodeError:
+            repaired = _repair_json_syntax(fixed)
+            data = json.loads(repaired)
     if not isinstance(data, list):
         raise ValueError("Model did not return a JSON array")
     sanitized: List[GeneratedItem] = []
@@ -395,7 +454,9 @@ def main():
                         raise ValueError(f"Detected {len(dups)} question(s) possibly copied from base file at positions: {dups}")
             except Exception as e:
                 st.error(f"Generation failed for {triple.subject} / {triple.unit} / {triple.topic}.\nModel: {model}\nBase URL: {base_url}\nReasoning: {reasoning_effort}\nParse hint: Ensure the model returns a pure JSON array as instructed.\nError: {e}")
-                st.code(user_prompt)
+                # For security/UX, avoid echoing the full prompt in UI by default
+                with st.expander("Show debug prompt", expanded=False):
+                    st.code(user_prompt)
                 st.stop()
 
             for it in items:
