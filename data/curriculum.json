@@ -1,0 +1,47 @@
+[
+  { "subject": "Quantitative Math", "unit": "Problem Solving", "topic": "Numbers and Operations" },
+  { "subject": "Quantitative Math", "unit": "Problem Solving", "topic": "Algebra" },
+  { "subject": "Quantitative Math", "unit": "Problem Solving", "topic": "Geometry" },
+  { "subject": "Quantitative Math", "unit": "Problem Solving", "topic": "Problem Solving" },
+  { "subject": "Quantitative Math", "unit": "Problem Solving", "topic": "Probability and Statistics" },
+  { "subject": "Quantitative Math", "unit": "Problem Solving", "topic": "Data Analysis" },
+
+  { "subject": "Quantitative Math", "unit": "Algebra", "topic": "Algebraic Word Problems" },
+  { "subject": "Quantitative Math", "unit": "Algebra", "topic": "Interpreting Variables" },
+  { "subject": "Quantitative Math", "unit": "Algebra", "topic": "Polynomial Expressions (FOIL/Factoring)" },
+  { "subject": "Quantitative Math", "unit": "Algebra", "topic": "Rational Expressions" },
+  { "subject": "Quantitative Math", "unit": "Algebra", "topic": "Exponential Expressions (Product rule, negative exponents)" },
+  { "subject": "Quantitative Math", "unit": "Algebra", "topic": "Quadratic Equations & Functions (Finding roots/solutions, graphing)" },
+  { "subject": "Quantitative Math", "unit": "Algebra", "topic": "Functions Operations" },
+
+  { "subject": "Quantitative Math", "unit": "Geometry and Measurement", "topic": "Area & Volume" },
+  { "subject": "Quantitative Math", "unit": "Geometry and Measurement", "topic": "Perimeter" },
+  { "subject": "Quantitative Math", "unit": "Geometry and Measurement", "topic": "Lines, Angles, & Triangles" },
+  { "subject": "Quantitative Math", "unit": "Geometry and Measurement", "topic": "Right Triangles & Trigonometry" },
+  { "subject": "Quantitative Math", "unit": "Geometry and Measurement", "topic": "Circles (Area, circumference)" },
+  { "subject": "Quantitative Math", "unit": "Geometry and Measurement", "topic": "Coordinate Geometry" },
+  { "subject": "Quantitative Math", "unit": "Geometry and Measurement", "topic": "Slope" },
+  { "subject": "Quantitative Math", "unit": "Geometry and Measurement", "topic": "Transformations (Dilating a shape)" },
+  { "subject": "Quantitative Math", "unit": "Geometry and Measurement", "topic": "Parallel & Perpendicular Lines" },
+  { "subject": "Quantitative Math", "unit": "Geometry and Measurement", "topic": "Solid Figures (Volume of Cubes)" },
+
+  { "subject": "Quantitative Math", "unit": "Numbers and Operations", "topic": "Basic Number Theory" },
+  { "subject": "Quantitative Math", "unit": "Numbers and Operations", "topic": "Prime & Composite Numbers" },
+  { "subject": "Quantitative Math", "unit": "Numbers and Operations", "topic": "Rational Numbers" },
+  { "subject": "Quantitative Math", "unit": "Numbers and Operations", "topic": "Order of Operations" },
+  { "subject": "Quantitative Math", "unit": "Numbers and Operations", "topic": "Estimation" },
+  { "subject": "Quantitative Math", "unit": "Numbers and Operations", "topic": "Fractions, Decimals, & Percents" },
+  { "subject": "Quantitative Math", "unit": "Numbers and Operations", "topic": "Sequences & Series" },
+  { "subject": "Quantitative Math", "unit": "Numbers and Operations", "topic": "Computation with Whole Numbers" },
+  { "subject": "Quantitative Math", "unit": "Numbers and Operations", "topic": "Operations with Negatives" },
+
+  { "subject": "Quantitative Math", "unit": "Data Analysis & Probability", "topic": "Interpretation of Tables & Graphs" },
+  { "subject": "Quantitative Math", "unit": "Data Analysis & Probability", "topic": "Trends & Inferences" },
+  { "subject": "Quantitative Math", "unit": "Data Analysis & Probability", "topic": "Probability (Basic, Compound Events)" },
+  { "subject": "Quantitative Math", "unit": "Data Analysis & Probability", "topic": "Mean, Median, Mode, & Range" },
+  { "subject": "Quantitative Math", "unit": "Data Analysis & Probability", "topic": "Weighted Averages" },
+  { "subject": "Quantitative Math", "unit": "Data Analysis & Probability", "topic": "Counting & Arrangement Problems" },
+
+  { "subject": "Quantitative Math", "unit": "Reasoning", "topic": "Word Problems" }
+]
+

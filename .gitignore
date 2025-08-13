@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+.DS_Store
+*.pyc
+*.pyo
+*.pyd
+.env
+ML-Official-T1-Math-01.md
+assessment.docx
+assets/*.psd
+assets/*.ai
+assets/*.xcf
+*.ipynb_checkpoints
+node_modules/
+assessment.txt
+
